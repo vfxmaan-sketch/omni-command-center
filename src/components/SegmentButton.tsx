@@ -54,77 +54,81 @@ export function SegmentButton({
   label,
   imageSrc,
   color,
-  position,
   isDisabled,
   isPulsing,
   onClick,
-}: SegmentButtonProps) {
+}: Omit<SegmentButtonProps, 'position'>) {
   const styles = colorStyles[color];
 
   return (
     <motion.div
-      className="absolute"
-      style={{ left: position.x, top: position.y, transform: 'translate(-50%, -50%)' }}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.3 }}
     >
-      {/* Button container */}
+      {/* Plate-style button container */}
       <motion.button
         onClick={onClick}
         disabled={isDisabled}
         className={cn(
-          "relative w-32 h-32 md:w-40 md:h-40 rounded-full transition-all duration-300",
+          "relative w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-48 lg:h-48 rounded-full transition-all duration-300",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
           !isDisabled && "cursor-pointer",
           isDisabled && "cursor-not-allowed opacity-80"
         )}
-        whileHover={!isDisabled ? { scale: 1.05 } : {}}
-        whileTap={!isDisabled ? { scale: 0.98 } : {}}
+        whileHover={!isDisabled ? { scale: 1.08, y: -5 } : {}}
+        whileTap={!isDisabled ? { scale: 0.95 } : {}}
       >
+        {/* Plate base shadow (table surface effect) */}
+        <div className="absolute inset-0 rounded-full bg-black/30 blur-xl translate-y-4 scale-90" />
+
         {/* Outer rotating gradient border (visible on hover) */}
         <motion.div
           className={cn(
-            "absolute -inset-1 rounded-full opacity-0 transition-opacity duration-300",
-            !isDisabled && "group-hover:opacity-100"
+            "absolute -inset-2 rounded-full opacity-0 transition-opacity duration-300",
+            !isDisabled && "hover:opacity-100"
           )}
           style={{
-            background: `conic-gradient(from 0deg, transparent, hsl(var(--neon-${color})), transparent)`,
+            background: `conic-gradient(from 0deg, transparent, hsl(var(--neon-${color})), transparent, hsl(var(--neon-${color})), transparent)`,
           }}
           animate={!isDisabled ? { rotate: 360 } : {}}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
         />
 
-        {/* Main ring */}
+        {/* Main ring - plate edge */}
         <div
           className={cn(
             "absolute inset-0 rounded-full border-4 transition-all duration-300",
+            "bg-gradient-to-b from-slate-700/80 via-slate-800/90 to-slate-900/95",
             styles.ring,
             styles.glow,
             !isDisabled && styles.hoverGlow
           )}
         />
 
-        {/* Inner gradient background */}
+        {/* Inner plate surface */}
         <div
           className={cn(
-            "absolute inset-2 rounded-full bg-gradient-to-br",
-            styles.gradient,
-            "backdrop-blur-sm"
+            "absolute inset-3 rounded-full",
+            "bg-gradient-to-br from-slate-600/50 via-slate-700/60 to-slate-800/70",
+            "backdrop-blur-md border border-white/5"
           )}
         />
 
         {/* Image container */}
-        <div className="absolute inset-3 rounded-full overflow-hidden">
+        <div className="absolute inset-5 rounded-full overflow-hidden shadow-inner">
           <img
             src={imageSrc}
             alt={name}
             className="w-full h-full object-cover"
           />
           
-          {/* Overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          {/* Overlay gradient for depth */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-white/10" />
         </div>
+
+        {/* Glass reflection effect */}
+        <div className="absolute inset-5 rounded-full bg-gradient-to-br from-white/20 via-transparent to-transparent pointer-events-none" />
 
         {/* Pulse effect on click */}
         {isPulsing && (
@@ -134,56 +138,34 @@ export function SegmentButton({
               styles.ring
             )}
             initial={{ scale: 1, opacity: 1 }}
-            animate={{ scale: 1.3, opacity: 0 }}
-            transition={{ duration: 0.4 }}
+            animate={{ scale: 1.5, opacity: 0 }}
+            transition={{ duration: 0.5 }}
           />
         )}
 
-        {/* Breathing glow effect on hover */}
+        {/* Breathing glow effect */}
         {!isDisabled && (
           <motion.div
-            className={cn(
-              "absolute -inset-2 rounded-full opacity-0 transition-opacity duration-300",
-              "hover:opacity-100"
-            )}
+            className="absolute -inset-3 rounded-full pointer-events-none"
             animate={{
               boxShadow: [
-                `0 0 30px hsl(var(--neon-${color}) / 0.3)`,
-                `0 0 60px hsl(var(--neon-${color}) / 0.5)`,
-                `0 0 30px hsl(var(--neon-${color}) / 0.3)`,
+                `0 0 20px hsl(var(--neon-${color}) / 0.2)`,
+                `0 0 40px hsl(var(--neon-${color}) / 0.4)`,
+                `0 0 20px hsl(var(--neon-${color}) / 0.2)`,
               ],
             }}
-            transition={{ duration: 2, repeat: Infinity }}
+            transition={{ duration: 3, repeat: Infinity }}
           />
         )}
 
         {/* Label */}
-        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-center whitespace-nowrap">
-          <div className={cn("font-display text-lg font-bold", styles.text, styles.textGlow)}>
+        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-center whitespace-nowrap">
+          <div className={cn("font-display text-base sm:text-lg md:text-xl font-bold", styles.text, styles.textGlow)}>
             {name}
           </div>
-          <div className="text-xs text-muted-foreground">{label}</div>
+          <div className="text-xs sm:text-sm text-muted-foreground/80">{label}</div>
         </div>
       </motion.button>
-
-      {/* Connection line to center (decorative) */}
-      <svg
-        className="absolute pointer-events-none"
-        style={{
-          width: '200%',
-          height: '200%',
-          left: '-50%',
-          top: '-50%',
-          zIndex: -1,
-        }}
-      >
-        <defs>
-          <linearGradient id={`line-gradient-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={`hsl(var(--neon-${color}))`} stopOpacity="0.6" />
-            <stop offset="100%" stopColor={`hsl(var(--neon-${color}))`} stopOpacity="0" />
-          </linearGradient>
-        </defs>
-      </svg>
     </motion.div>
   );
 }
