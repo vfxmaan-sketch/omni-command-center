@@ -62,42 +62,67 @@ export function SmartHomeDashboard() {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
-      {/* Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(${backgroundImage})`,
-        }}
-      />
+    <div className="relative min-h-screen w-full overflow-hidden bg-background">
+      {/* Futuristic table surface background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900" />
+      
+      {/* Table surface texture - subtle grid pattern */}
+      <div className="absolute inset-0 opacity-20">
+        <div 
+          className="w-full h-full"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(0, 200, 255, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(0, 200, 255, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+          }}
+        />
+      </div>
 
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" />
+      {/* Ambient glow from table edges */}
+      <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-slate-950/80" />
 
       {/* Circuit pattern overlay */}
-      <div className="absolute inset-0 circuit-pattern opacity-30" />
+      <div className="absolute inset-0 circuit-pattern opacity-20" />
 
       {/* Animated circuit lines */}
       <CircuitLines />
 
-      {/* Main content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
-        <div className="relative w-full max-w-4xl aspect-square">
+      {/* Main content - tablet optimized landscape layout */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-6 md:p-8">
+        {/* Table surface container */}
+        <div className="relative w-full max-w-6xl aspect-[16/10] bg-gradient-to-b from-slate-800/50 to-slate-900/50 rounded-3xl border border-neon-cyan/20 shadow-[0_0_60px_rgba(0,200,255,0.15),inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-sm overflow-hidden">
+          
+          {/* Inner table glow effect */}
+          <div className="absolute inset-4 rounded-2xl border border-neon-cyan/10 bg-gradient-to-br from-slate-800/30 via-transparent to-slate-900/30" />
+          
           {/* Center logo */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
             <OmniaLogo />
           </div>
 
-          {/* Segment buttons */}
-          {segmentConfig.map((segment) => (
-            <SegmentButton
-              key={segment.id}
-              {...segment}
-              isDisabled={isPlaying}
-              isPulsing={isPulsing === segment.id}
-              onClick={() => handleSegmentClick(segment.id, segment.name)}
-            />
-          ))}
+          {/* Segment buttons as plates on table - 2x2 grid around center */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            {segmentConfig.map((segment) => (
+              <div
+                key={segment.id}
+                className="absolute"
+                style={{
+                  left: segment.position.x,
+                  top: segment.position.y,
+                  transform: 'translate(-50%, -50%)',
+                }}
+              >
+                <SegmentButton
+                  {...segment}
+                  isDisabled={isPlaying}
+                  isPulsing={isPulsing === segment.id}
+                  onClick={() => handleSegmentClick(segment.id, segment.name)}
+                />
+              </div>
+            ))}
+          </div>
 
           {/* Connection lines from center to segments */}
           <svg
@@ -106,23 +131,23 @@ export function SmartHomeDashboard() {
           >
             <defs>
               <linearGradient id="line-orange" x1="50%" y1="50%" x2="25%" y2="25%">
-                <stop offset="0%" stopColor="hsl(220 100% 60%)" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="hsl(25 100% 55%)" stopOpacity="0.4" />
+                <stop offset="0%" stopColor="hsl(190 100% 55%)" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="hsl(25 100% 55%)" stopOpacity="0.3" />
               </linearGradient>
               <linearGradient id="line-cyan" x1="50%" y1="50%" x2="75%" y2="25%">
-                <stop offset="0%" stopColor="hsl(220 100% 60%)" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="hsl(190 100% 55%)" stopOpacity="0.4" />
+                <stop offset="0%" stopColor="hsl(190 100% 55%)" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="hsl(190 100% 55%)" stopOpacity="0.3" />
               </linearGradient>
               <linearGradient id="line-green" x1="50%" y1="50%" x2="75%" y2="75%">
-                <stop offset="0%" stopColor="hsl(220 100% 60%)" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="hsl(140 70% 50%)" stopOpacity="0.4" />
+                <stop offset="0%" stopColor="hsl(190 100% 55%)" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="hsl(140 70% 50%)" stopOpacity="0.3" />
               </linearGradient>
               <linearGradient id="line-red" x1="50%" y1="50%" x2="25%" y2="75%">
-                <stop offset="0%" stopColor="hsl(220 100% 60%)" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="hsl(0 85% 55%)" stopOpacity="0.4" />
+                <stop offset="0%" stopColor="hsl(190 100% 55%)" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="hsl(0 85% 55%)" stopOpacity="0.3" />
               </linearGradient>
               <filter id="line-glow">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
                 <feMerge>
                   <feMergeNode in="coloredBlur" />
                   <feMergeNode in="SourceGraphic" />
@@ -134,7 +159,8 @@ export function SmartHomeDashboard() {
             <motion.line
               x1="50%" y1="50%" x2="25%" y2="25%"
               stroke="url(#line-orange)"
-              strokeWidth="2"
+              strokeWidth="1.5"
+              strokeDasharray="8 4"
               filter="url(#line-glow)"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
@@ -143,7 +169,8 @@ export function SmartHomeDashboard() {
             <motion.line
               x1="50%" y1="50%" x2="75%" y2="25%"
               stroke="url(#line-cyan)"
-              strokeWidth="2"
+              strokeWidth="1.5"
+              strokeDasharray="8 4"
               filter="url(#line-glow)"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
@@ -152,7 +179,8 @@ export function SmartHomeDashboard() {
             <motion.line
               x1="50%" y1="50%" x2="75%" y2="75%"
               stroke="url(#line-green)"
-              strokeWidth="2"
+              strokeWidth="1.5"
+              strokeDasharray="8 4"
               filter="url(#line-glow)"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
@@ -161,7 +189,8 @@ export function SmartHomeDashboard() {
             <motion.line
               x1="50%" y1="50%" x2="25%" y2="75%"
               stroke="url(#line-red)"
-              strokeWidth="2"
+              strokeWidth="1.5"
+              strokeDasharray="8 4"
               filter="url(#line-glow)"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
@@ -172,7 +201,7 @@ export function SmartHomeDashboard() {
             {segmentConfig.map((segment, i) => (
               <motion.circle
                 key={`particle-${segment.id}`}
-                r="3"
+                r="4"
                 fill={`hsl(var(--neon-${segment.color}))`}
                 filter="url(#line-glow)"
                 initial={{ opacity: 0 }}
