@@ -3,9 +3,7 @@ import { OmniaLogo } from './OmniaLogo';
 import { SegmentButton } from './SegmentButton';
 import { CircuitLines } from './CircuitLines';
 import { usePlaybackState } from '@/hooks/usePlaybackState';
-import { toast } from 'sonner';
 
-import backgroundImage from '@/assets/futuristic-cityscape.jpg';
 import sunsetIcon from '@/assets/sunset-icon.png';
 import kitchenIcon from '@/assets/kitchen-icon.png';
 import securityIcon from '@/assets/security-icon.png';
@@ -47,18 +45,11 @@ const segmentConfig = [
 ];
 
 export function SmartHomeDashboard() {
-  const { isPlaying, isPulsing, triggerSegment, resetPlaybackState } = usePlaybackState();
+  const { isPlaying, isPulsing, activeSegment, timeoutDuration, startTime, triggerSegment } = usePlaybackState();
 
-  const handleSegmentClick = (segmentId: string, segmentName: string) => {
-    if (isPlaying) {
-      toast.info('Please wait for current playback to finish');
-      return;
-    }
-    
+  const handleSegmentClick = (segmentId: string) => {
+    if (isPlaying) return;
     triggerSegment(segmentId);
-    toast.success(`Command sent: ${segmentName}`, {
-      description: 'External playback triggered',
-    });
   };
 
   return (
@@ -117,8 +108,11 @@ export function SmartHomeDashboard() {
                 <SegmentButton
                   {...segment}
                   isDisabled={isPlaying}
+                  isActive={activeSegment === segment.id}
                   isPulsing={isPulsing === segment.id}
-                  onClick={() => handleSegmentClick(segment.id, segment.name)}
+                  timeoutDuration={timeoutDuration}
+                  startTime={startTime}
+                  onClick={() => handleSegmentClick(segment.id)}
                 />
               </div>
             ))}
@@ -221,28 +215,6 @@ export function SmartHomeDashboard() {
           </svg>
         </div>
       </div>
-
-      {/* Status indicator */}
-      {isPlaying && (
-        <motion.div
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-        >
-          <div className="bg-card/90 backdrop-blur-md border border-neon-cyan/30 rounded-full px-6 py-3 flex items-center gap-3 shadow-neon-cyan">
-            <div className="w-3 h-3 rounded-full bg-neon-cyan animate-pulse" />
-            <span className="text-sm font-display text-foreground">
-              External playback in progress...
-            </span>
-            <button
-              onClick={resetPlaybackState}
-              className="ml-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Reset
-            </button>
-          </div>
-        </motion.div>
-      )}
     </div>
   );
 }
