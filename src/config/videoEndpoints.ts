@@ -23,64 +23,64 @@ export interface VideoEndpoint {
 
 export const videoTriggerEndpoints: VideoEndpoint[] = [
   {
-    id: 'sunset',
-    name: 'Sunset',
-    label: 'Segment 1',
-    url: 'https://your-server.com/api/play/sunset',
+    id: 'ai-home',
+    name: 'AI Home Assistant',
+    label: 'Smart Living',
+    url: 'https://your-server.com/api/play/ai-home',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: {
       action: 'play',
-      segment: 'sunset',
-    },
-    timeoutMs: 45000, // 45 seconds
-  },
-  {
-    id: 'kitchen',
-    name: 'Kitchen',
-    label: 'Segment 2',
-    url: 'https://your-server.com/api/play/kitchen',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: {
-      action: 'play',
-      segment: 'kitchen',
+      segment: 'ai-home',
     },
     timeoutMs: 30000, // 30 seconds
   },
   {
-    id: 'flowers',
-    name: 'Kitchen Flowers',
-    label: 'Segment 3',
-    url: 'https://your-server.com/api/play/flowers',
+    id: 'food-intelligence',
+    name: 'Food Intelligence',
+    label: 'Healthy Living',
+    url: 'https://your-server.com/api/play/food-intelligence',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: {
       action: 'play',
-      segment: 'flowers',
+      segment: 'food-intelligence',
     },
-    timeoutMs: 20000, // 20 seconds
+    timeoutMs: 30000, // 30 seconds
   },
   {
-    id: 'security',
-    name: 'Security',
-    label: 'Segment 4',
-    url: 'https://your-server.com/api/play/security',
+    id: 'life-tech',
+    name: 'Life-Elevating Tech',
+    label: '3D Printing',
+    url: 'https://your-server.com/api/play/life-tech',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: {
       action: 'play',
-      segment: 'security',
+      segment: 'life-tech',
     },
-    timeoutMs: 60000, // 60 seconds
+    timeoutMs: 30000, // 30 seconds
+  },
+  {
+    id: 'safety',
+    name: 'Safety & Security',
+    label: 'Protection',
+    url: 'https://your-server.com/api/play/safety',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: {
+      action: 'play',
+      segment: 'safety',
+    },
+    timeoutMs: 30000, // 30 seconds
   },
 ];
 

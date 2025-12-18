@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
+import { LucideIcon } from 'lucide-react';
 
 interface SegmentButtonProps {
   id: string;
   name: string;
   label: string;
-  imageSrc: string;
-  color: 'orange' | 'cyan' | 'red' | 'green';
+  icon: LucideIcon;
+  color: 'warm' | 'green' | 'cyan' | 'red';
   position: { x: string; y: string };
   isDisabled: boolean;
   isActive: boolean;
@@ -18,41 +19,45 @@ interface SegmentButtonProps {
 }
 
 const colorStyles = {
-  orange: {
-    ring: 'border-neon-orange',
-    glow: 'shadow-neon-orange',
-    hoverGlow: 'hover:shadow-[0_0_40px_hsl(25_100%_55%/0.7),0_0_80px_hsl(25_100%_55%/0.4)]',
-    text: 'text-neon-orange',
-    textGlow: 'text-glow-orange',
-    gradient: 'from-orange-500/20 to-amber-500/20',
-    strokeColor: 'hsl(25, 100%, 55%)',
-  },
-  cyan: {
-    ring: 'border-neon-cyan',
-    glow: 'shadow-neon-cyan',
-    hoverGlow: 'hover:shadow-[0_0_40px_hsl(190_100%_55%/0.7),0_0_80px_hsl(190_100%_55%/0.4)]',
-    text: 'text-neon-cyan',
-    textGlow: 'text-glow-cyan',
-    gradient: 'from-cyan-500/20 to-blue-500/20',
-    strokeColor: 'hsl(190, 100%, 55%)',
-  },
-  red: {
-    ring: 'border-neon-red',
-    glow: 'shadow-neon-red',
-    hoverGlow: 'hover:shadow-[0_0_40px_hsl(0_85%_55%/0.7),0_0_80px_hsl(0_85%_55%/0.4)]',
-    text: 'text-neon-red',
-    textGlow: 'text-glow-red',
-    gradient: 'from-red-500/20 to-rose-500/20',
-    strokeColor: 'hsl(0, 85%, 55%)',
+  warm: {
+    ring: 'border-amber-400',
+    glow: 'shadow-[0_0_30px_hsl(38_92%_50%/0.5)]',
+    hoverGlow: 'hover:shadow-[0_0_40px_hsl(38_92%_50%/0.7),0_0_80px_hsl(38_92%_50%/0.4)]',
+    text: 'text-amber-400',
+    textGlow: 'drop-shadow-[0_0_8px_hsl(38_92%_50%/0.8)]',
+    gradient: 'from-amber-500/20 to-orange-500/20',
+    strokeColor: 'hsl(38, 92%, 50%)',
+    iconBg: 'from-amber-500/30 to-orange-500/30',
   },
   green: {
-    ring: 'border-neon-green',
-    glow: 'shadow-neon-green',
-    hoverGlow: 'hover:shadow-[0_0_40px_hsl(140_70%_50%/0.7),0_0_80px_hsl(140_70%_50%/0.4)]',
-    text: 'text-neon-green',
-    textGlow: 'text-glow-green',
-    gradient: 'from-green-500/20 to-emerald-500/20',
-    strokeColor: 'hsl(140, 70%, 50%)',
+    ring: 'border-emerald-400',
+    glow: 'shadow-[0_0_30px_hsl(160_84%_39%/0.5)]',
+    hoverGlow: 'hover:shadow-[0_0_40px_hsl(160_84%_39%/0.7),0_0_80px_hsl(160_84%_39%/0.4)]',
+    text: 'text-emerald-400',
+    textGlow: 'drop-shadow-[0_0_8px_hsl(160_84%_39%/0.8)]',
+    gradient: 'from-emerald-500/20 to-green-500/20',
+    strokeColor: 'hsl(160, 84%, 39%)',
+    iconBg: 'from-emerald-500/30 to-green-500/30',
+  },
+  cyan: {
+    ring: 'border-cyan-400',
+    glow: 'shadow-[0_0_30px_hsl(190_100%_55%/0.5)]',
+    hoverGlow: 'hover:shadow-[0_0_40px_hsl(190_100%_55%/0.7),0_0_80px_hsl(190_100%_55%/0.4)]',
+    text: 'text-cyan-400',
+    textGlow: 'drop-shadow-[0_0_8px_hsl(190_100%_55%/0.8)]',
+    gradient: 'from-cyan-500/20 to-blue-500/20',
+    strokeColor: 'hsl(190, 100%, 55%)',
+    iconBg: 'from-cyan-500/30 to-blue-500/30',
+  },
+  red: {
+    ring: 'border-rose-500',
+    glow: 'shadow-[0_0_30px_hsl(0_85%_55%/0.5)]',
+    hoverGlow: 'hover:shadow-[0_0_40px_hsl(0_85%_55%/0.7),0_0_80px_hsl(0_85%_55%/0.4)]',
+    text: 'text-rose-500',
+    textGlow: 'drop-shadow-[0_0_8px_hsl(0_85%_55%/0.8)]',
+    gradient: 'from-rose-500/20 to-red-500/20',
+    strokeColor: 'hsl(0, 85%, 55%)',
+    iconBg: 'from-rose-500/30 to-red-500/30',
   },
 };
 
@@ -60,7 +65,7 @@ export function SegmentButton({
   id,
   name,
   label,
-  imageSrc,
+  icon: Icon,
   color,
   isDisabled,
   isActive,
@@ -200,19 +205,23 @@ export function SegmentButton({
           )}
         />
 
-        {/* Image container */}
-        <div className="absolute inset-5 rounded-full overflow-hidden shadow-inner">
-          <img
-            src={imageSrc}
-            alt={name}
+        {/* Icon container */}
+        <div className={cn(
+          "absolute inset-5 rounded-full overflow-hidden shadow-inner flex items-center justify-center",
+          "bg-gradient-to-br",
+          styles.iconBg
+        )}>
+          <Icon 
             className={cn(
-              "w-full h-full object-cover transition-all duration-500",
+              "w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 transition-all duration-500",
+              styles.text,
               isInactive && "opacity-60"
             )}
+            strokeWidth={1.5}
           />
           
           {/* Overlay gradient for depth */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-white/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-white/10" />
         </div>
 
         {/* Glass reflection effect */}
@@ -257,9 +266,9 @@ export function SegmentButton({
                 `0 0 60px ${styles.strokeColor}`,
                 `0 0 30px ${styles.strokeColor}`,
               ] : [
-                `0 0 20px hsl(var(--neon-${color}) / 0.2)`,
-                `0 0 40px hsl(var(--neon-${color}) / 0.4)`,
-                `0 0 20px hsl(var(--neon-${color}) / 0.2)`,
+                `0 0 20px ${styles.strokeColor.replace(')', ' / 0.2)')}`,
+                `0 0 40px ${styles.strokeColor.replace(')', ' / 0.4)')}`,
+                `0 0 20px ${styles.strokeColor.replace(')', ' / 0.2)')}`,
               ],
             }}
             transition={{ duration: isActive ? 1.5 : 3, repeat: Infinity }}
