@@ -18,6 +18,7 @@ export interface VideoEndpoint {
   method: 'GET' | 'POST';
   headers?: Record<string, string>;
   body?: Record<string, unknown>;
+  timeoutMs: number; // Per-button unlock time in milliseconds
 }
 
 export const videoTriggerEndpoints: VideoEndpoint[] = [
@@ -34,6 +35,7 @@ export const videoTriggerEndpoints: VideoEndpoint[] = [
       action: 'play',
       segment: 'sunset',
     },
+    timeoutMs: 45000, // 45 seconds
   },
   {
     id: 'kitchen',
@@ -48,6 +50,7 @@ export const videoTriggerEndpoints: VideoEndpoint[] = [
       action: 'play',
       segment: 'kitchen',
     },
+    timeoutMs: 30000, // 30 seconds
   },
   {
     id: 'flowers',
@@ -62,6 +65,7 @@ export const videoTriggerEndpoints: VideoEndpoint[] = [
       action: 'play',
       segment: 'flowers',
     },
+    timeoutMs: 20000, // 20 seconds
   },
   {
     id: 'security',
@@ -76,11 +80,12 @@ export const videoTriggerEndpoints: VideoEndpoint[] = [
       action: 'play',
       segment: 'security',
     },
+    timeoutMs: 60000, // 60 seconds
   },
 ];
 
-// Auto-reset timeout in milliseconds (30 seconds)
-export const PLAYBACK_TIMEOUT_MS = 30000;
+// Default timeout if not specified per-button (30 seconds)
+export const DEFAULT_PLAYBACK_TIMEOUT_MS = 30000;
 
 // Endpoint to call when video finishes (optional)
 // Set to null to use only the timeout reset

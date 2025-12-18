@@ -1,10 +1,12 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { videoTriggerEndpoints, PLAYBACK_TIMEOUT_MS, type VideoEndpoint } from '@/config/videoEndpoints';
+import { videoTriggerEndpoints, DEFAULT_PLAYBACK_TIMEOUT_MS, type VideoEndpoint } from '@/config/videoEndpoints';
 
 interface PlaybackState {
   isPlaying: boolean;
   activeSegment: string | null;
   isPulsing: string | null;
+  timeoutDuration: number;
+  startTime: number | null;
 }
 
 export function usePlaybackState() {
@@ -12,6 +14,8 @@ export function usePlaybackState() {
     isPlaying: false,
     activeSegment: null,
     isPulsing: null,
+    timeoutDuration: 0,
+    startTime: null,
   });
   
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -53,32 +57,35 @@ export function usePlaybackState() {
       // Send HTTP request to external system
       console.log(`Triggering external playback for: ${endpoint.name}`);
       console.log(`URL: ${endpoint.url}`);
+      console.log(`Timeout: ${endpoint.timeoutMs}ms`);
       
       // Attempt the fetch - in production this would hit your actual endpoint
-      // For demo purposes, we'll catch the error and proceed
       try {
         await fetch(endpoint.url, {
           method: endpoint.method,
           headers: endpoint.headers,
           body: endpoint.method === 'POST' ? JSON.stringify(endpoint.body) : undefined,
-          mode: 'no-cors', // Allow cross-origin requests
+          mode: 'no-cors',
         });
       } catch (fetchError) {
-        // Expected to fail with demo URLs - in production, your real endpoints would work
         console.log('HTTP request sent (demo mode - configure real endpoints in videoEndpoints.ts)');
       }
 
-      // Set playing state - disable all buttons
+      const timeout = endpoint.timeoutMs || DEFAULT_PLAYBACK_TIMEOUT_MS;
+
+      // Set playing state with per-button timeout
       setState(prev => ({
         ...prev,
         isPlaying: true,
         activeSegment: segmentId,
+        timeoutDuration: timeout,
+        startTime: Date.now(),
       }));
 
-      // Auto-reset after timeout
+      // Auto-reset after per-button timeout
       timeoutRef.current = setTimeout(() => {
         resetPlaybackState();
-      }, PLAYBACK_TIMEOUT_MS);
+      }, timeout);
 
     } catch (error) {
       console.error('Failed to trigger segment:', error);
@@ -99,6 +106,8 @@ export function usePlaybackState() {
       isPlaying: false,
       activeSegment: null,
       isPulsing: null,
+      timeoutDuration: 0,
+      startTime: null,
     });
     
     console.log('Playback state reset - buttons re-enabled');
@@ -108,6 +117,8 @@ export function usePlaybackState() {
     isPlaying: state.isPlaying,
     activeSegment: state.activeSegment,
     isPulsing: state.isPulsing,
+    timeoutDuration: state.timeoutDuration,
+    startTime: state.startTime,
     triggerSegment,
     resetPlaybackState,
     endpoints: videoTriggerEndpoints,
