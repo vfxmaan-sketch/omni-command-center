@@ -4,7 +4,7 @@ import { SegmentButton } from './SegmentButton';
 import { CircuitLines } from './CircuitLines';
 import { usePlaybackState } from '@/hooks/usePlaybackState';
 import { useVoiceover } from '@/hooks/useVoiceover';
-import { Brain, Salad, Printer, ShieldCheck } from 'lucide-react';
+import { Brain, Leaf, Printer, ShieldCheck } from 'lucide-react';
 
 const segmentConfig = [
   {
@@ -19,7 +19,7 @@ const segmentConfig = [
     id: 'food-intelligence',
     name: 'Food Intelligence',
     label: 'Healthy Living',
-    icon: Salad,
+    icon: Leaf,
     color: 'green' as const,
     position: { x: '75%', y: '25%' },
   },
